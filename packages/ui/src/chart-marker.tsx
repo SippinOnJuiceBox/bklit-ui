@@ -159,30 +159,42 @@ export function MarkerGroup({
       {containerRef?.current &&
         createPortal(
           <div
-            className="absolute pointer-events-none"
+            className="absolute"
             style={{
               left: portalX,
               top: portalY,
               zIndex: 100,
-              // Use transform to center the portal origin exactly on the crosshair
-              transform: "translate(0, 0)",
+              // Pointer events only when fanned to capture hover area
+              pointerEvents: shouldFan ? "auto" : "none",
             }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
+            {/* Invisible hit area to prevent hover flickering between circles */}
+            {shouldFan && (
+              <div
+                className="absolute rounded-full"
+                style={{
+                  width: FAN_RADIUS * 2 + size,
+                  height: FAN_RADIUS * 2 + size,
+                  left: -(FAN_RADIUS + size / 2),
+                  top: -(FAN_RADIUS + size / 2),
+                }}
+              />
+            )}
+            
             {/* Fanned circles */}
-            <AnimatePresence>
+            <AnimatePresence mode="sync">
               {shouldFan &&
                 markers.map((marker, index) => {
                   const position = getCirclePosition(index, markers.length);
                   return (
                     <motion.div
-                      key={`fan-${marker.date.toISOString()}-${index}`}
-                      className="absolute pointer-events-auto"
+                      key={`fan-${index}`}
+                      className="absolute"
                       style={{
                         width: size,
                         height: size,
-                        // Center the circle on the origin point
                         left: -size / 2,
                         top: -size / 2,
                       }}
