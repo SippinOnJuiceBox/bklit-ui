@@ -1,13 +1,36 @@
-import { DocsLayout } from "fumadocs-ui/layouts/notebook";
-import type { ReactNode } from 'react';
-import { baseOptions } from '../layout.config';
-import { source } from '@/lib/source';
+import { NextProvider } from "fumadocs-core/framework/next";
+import type { ReactNode } from "react";
+import { source } from "@/lib/source";
+import { DocsLayout } from "@/components/docs";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <DocsLayout tree={source.pageTree} {...baseOptions}>
-      {children}
-    </DocsLayout>
+    <NextProvider>
+      <DocsLayout
+        tree={source.pageTree}
+        nav={{
+          title: (
+            <span className="font-semibold">
+              bklit<span className="text-primary">-ui</span>
+            </span>
+          ),
+          links: [
+            {
+              text: "Get Started",
+              url: "/docs",
+              active: "nested-url",
+            },
+            {
+              text: "Components",
+              url: "/docs/components",
+              active: "nested-url",
+            },
+          ],
+          githubUrl: "https://github.com/bklit/bklit-ui",
+        }}
+      >
+        {children}
+      </DocsLayout>
+    </NextProvider>
   );
 }
-

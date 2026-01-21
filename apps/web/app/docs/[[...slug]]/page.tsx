@@ -1,13 +1,20 @@
-import { source } from '@/lib/source';
-import {
-  DocsPage,
-  DocsBody,
-  DocsDescription,
-  DocsTitle,
-} from 'fumadocs-ui/page';
-import { notFound } from 'next/navigation';
-import defaultMdxComponents from 'fumadocs-ui/mdx';
-import { ComponentPreview } from '@/components/component-preview';
+import { source } from "@/lib/source";
+import { notFound } from "next/navigation";
+import defaultMdxComponents from "fumadocs-ui/mdx";
+import { ComponentPreview } from "@/components/component-preview";
+import { TableOfContents } from "@/components/docs";
+import type { TOCItemType } from "fumadocs-core/toc";
+import type { ComponentType } from "react";
+
+// Extended page data types from fumadocs-mdx
+interface PageData {
+  title: string;
+  description?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body: ComponentType<any>;
+  toc: TOCItemType[];
+  full?: boolean;
+}
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
@@ -16,21 +23,33 @@ export default async function Page(props: {
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
-  const MDX = page.data.body;
+  const data = page.data as PageData;
+  const MDX = data.body;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
-      <DocsBody>
-        <MDX
-          components={{
-            ...defaultMdxComponents,
-            ComponentPreview,
-          }}
-        />
-      </DocsBody>
-    </DocsPage>
+    <div className="flex">
+      <article className="mx-auto min-w-0 max-w-3xl flex-1 px-6 py-8 pb-16">
+        <header className="mb-8">
+          <h1 className="m-0 text-3xl font-bold leading-tight text-foreground">
+            {data.title}
+          </h1>
+          {data.description && (
+            <p className="mt-2 text-lg text-muted-foreground">
+              {data.description}
+            </p>
+          )}
+        </header>
+        <div className="prose prose-neutral dark:prose-invert max-w-none">
+          <MDX
+            components={{
+              ...defaultMdxComponents,
+              ComponentPreview,
+            }}
+          />
+        </div>
+      </article>
+      <TableOfContents items={data.toc} />
+    </div>
   );
 }
 
@@ -50,4 +69,3 @@ export async function generateMetadata(props: {
     description: page.data.description,
   };
 }
-
