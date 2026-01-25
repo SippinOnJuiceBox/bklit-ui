@@ -74,6 +74,7 @@ Renders an individual ring with background track and animated progress arc.
 | `color` | `string` | from data/palette | Optional color override |
 | `animate` | `boolean` | `true` | Enable animation on mount |
 | `showGlow` | `boolean` | `true` | Show glow effect on hover |
+| `lineCap` | `"round" \| "butt"` | `"round"` | Line cap style for ring ends |
 
 ### RingCenter
 
@@ -234,6 +235,19 @@ Use the render prop for complete control over the center content:
     <LegendValue />
   </LegendItemComponent>
 </Legend>
+```
+
+### Flat Ring Ends (Butt Line Cap)
+
+Use `lineCap="butt"` for square/flat ring ends instead of rounded:
+
+```tsx
+<RingChart data={data} size={300}>
+  {data.map((item, index) => (
+    <Ring key={item.label} index={index} lineCap="butt" />
+  ))}
+  <RingCenter />
+</RingChart>
 ```
 
 ## Theming

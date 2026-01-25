@@ -56,7 +56,7 @@ export {
   useActiveMarkers,
 } from "./markers";
 // Ring chart components
-export { Ring, type RingProps } from "./ring";
+export { Ring, type RingLineCap, type RingProps } from "./ring";
 export { RingCenter, type RingCenterProps } from "./ring-center";
 export { RingChart, type RingChartProps } from "./ring-chart";
 export {

@@ -21,6 +21,8 @@ function generateArcPath(
   return generator({ startAngle, endAngle } as unknown as null) || "";
 }
 
+export type RingLineCap = "round" | "butt";
+
 export interface RingProps {
   /** Index of the ring in the data array */
   index: number;
@@ -30,6 +32,8 @@ export interface RingProps {
   animate?: boolean;
   /** Show glow effect on hover. Default: true */
   showGlow?: boolean;
+  /** Line cap style for ring ends. Default: "round" */
+  lineCap?: RingLineCap;
 }
 
 interface AnimatedProgressArcProps {
@@ -43,6 +47,7 @@ interface AnimatedProgressArcProps {
   isPushedOut: boolean;
   animationKey: number;
   showGlow: boolean;
+  lineCap: RingLineCap;
 }
 
 function AnimatedProgressArc({
@@ -56,10 +61,12 @@ function AnimatedProgressArc({
   isPushedOut,
   animationKey,
   showGlow,
+  lineCap,
 }: AnimatedProgressArcProps) {
   const startAngle = -Math.PI / 2;
   const targetEndAngle = startAngle + 2 * Math.PI * progress;
-  const cornerRadius = (outerRadius - innerRadius) / 2;
+  const cornerRadius =
+    lineCap === "round" ? (outerRadius - innerRadius) / 2 : 0;
 
   // Progress arc delay - starts after background rings expand
   const progressDelay = 0.6 + index * 0.1;
@@ -133,6 +140,7 @@ export function Ring({
   color: colorProp,
   animate = true,
   showGlow = true,
+  lineCap = "round",
 }: RingProps) {
   const {
     data,
@@ -196,7 +204,7 @@ export function Ring({
     >
       {/* Background track - full circle */}
       <Arc
-        cornerRadius={(outerRadius - innerRadius) / 2}
+        cornerRadius={lineCap === "round" ? (outerRadius - innerRadius) / 2 : 0}
         endAngle={2 * Math.PI}
         innerRadius={innerRadius}
         outerRadius={outerRadius}
@@ -236,6 +244,7 @@ export function Ring({
           isFaded={isFaded}
           isHovered={isHovered}
           isPushedOut={isPushedOut}
+          lineCap={lineCap}
           outerRadius={outerRadius}
           progress={progress}
           showGlow={showGlow}
@@ -251,7 +260,7 @@ export function Ring({
             outerRadius,
             -Math.PI / 2,
             -Math.PI / 2 + 2 * Math.PI * progress,
-            (outerRadius - innerRadius) / 2
+            lineCap === "round" ? (outerRadius - innerRadius) / 2 : 0
           )}
           fill={color}
           style={{
