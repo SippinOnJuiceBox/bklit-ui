@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useRadar } from "./radar-context";
+import { radarCssVars, useRadar } from "./radar-context";
 
 export interface RadarLabelsProps {
   /** Distance from the chart edge. Default: 24 */
@@ -54,12 +54,14 @@ export function RadarLabels({
             <text
               className={
                 interactive
-                  ? "cursor-pointer fill-chart-label/80 transition-colors duration-150 hover:fill-chart-label"
-                  : "fill-chart-label"
+                  ? "cursor-pointer transition-opacity duration-150 hover:opacity-100"
+                  : ""
               }
               dominantBaseline="middle"
               fontSize={fontSize}
               fontWeight={500}
+              opacity={interactive ? 0.8 : 1}
+              style={{ fill: radarCssVars.label }}
               textAnchor="middle"
               x={0}
               y={0}

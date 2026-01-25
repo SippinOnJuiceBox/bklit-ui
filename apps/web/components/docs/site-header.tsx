@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "fumadocs-core/link";
+import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { GithubStarCount } from "../github-star-count";
 import { BklitLogo } from "../icons/bklit";
+import { DiscordIcon } from "../icons/discord";
 import { GitHubIcon } from "../icons/github";
 import { Button } from "../ui/button";
 
@@ -17,6 +19,7 @@ interface NavLink {
 interface SiteHeaderProps {
   links?: NavLink[];
   githubUrl?: string;
+  discordUrl?: string;
 }
 
 const components = [
@@ -56,8 +59,19 @@ function MenuIcon({ open }: { open: boolean }) {
   );
 }
 
-export function SiteHeader({ links = [], githubUrl }: SiteHeaderProps) {
+export function SiteHeader({
+  links = [],
+  githubUrl,
+  discordUrl,
+}: SiteHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
+
+  // Wait for mount to avoid hydration mismatch with theme
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -71,6 +85,9 @@ export function SiteHeader({ links = [], githubUrl }: SiteHeaderProps) {
     };
   }, [mobileMenuOpen]);
 
+  // Only use resolved theme after mount to avoid hydration mismatch
+  const logoTheme = mounted && resolvedTheme === "dark" ? "dark" : "light";
+
   return (
     <>
       <header className="fixed top-0 right-0 left-0 z-50 h-14 bg-background/80 backdrop-blur-xl">
@@ -80,7 +97,7 @@ export function SiteHeader({ links = [], githubUrl }: SiteHeaderProps) {
               className="font-semibold text-foreground text-lg no-underline transition-opacity hover:opacity-80"
               href="/"
             >
-              <BklitLogo size={24} />
+              <BklitLogo size={24} theme={logoTheme} />
             </Link>
 
             {/* Desktop nav */}
@@ -110,6 +127,18 @@ export function SiteHeader({ links = [], githubUrl }: SiteHeaderProps) {
                 >
                   <GitHubIcon />
                   <GithubStarCount />
+                </Button>
+              </Link>
+            )}
+            {discordUrl && (
+              <Link
+                aria-label="Discord"
+                className="hidden md:block"
+                external
+                href={discordUrl}
+              >
+                <Button size="sm" variant="ghost">
+                  <DiscordIcon className="size-4" />
                 </Button>
               </Link>
             )}

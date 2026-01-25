@@ -10,17 +10,16 @@ export default function Layout({ children }: { children: ReactNode }) {
         nav={{
           links: [
             {
-              text: "Docs",
+              text: "Introduction",
               url: "/docs",
-              active: "nested-url",
             },
             {
               text: "Components",
               url: "/docs/components",
-              active: "nested-url",
             },
           ],
           githubUrl: "https://github.com/bklit/bklit-ui",
+          discordUrl: "https://discord.com/invite/9yyK8FwPcU",
         }}
         tree={source.pageTree}
       >

@@ -7,7 +7,7 @@ export const radarCssVars = {
   background: "var(--chart-background)",
   foreground: "var(--chart-foreground)",
   foregroundMuted: "var(--chart-foreground-muted)",
-  label: "var(--chart-label)",
+  label: "var(--chart-label, oklch(0.65 0.01 260))",
   grid: "var(--chart-grid)",
   border: "var(--border)",
   // Default radar colors from chart palette
@@ -37,8 +37,8 @@ export interface RadarMetric {
 export interface RadarData {
   /** Display label for this data series */
   label: string;
-  /** Color for this data series */
-  color: string;
+  /** Color for this data series (defaults to chart-1 through chart-5) */
+  color?: string;
   /** Metric values (key -> value, normalized 0-100) */
   values: Record<string, number>;
 }
