@@ -27,6 +27,12 @@ export interface TooltipBoxProps {
   className?: string;
   /** Tooltip content */
   children: React.ReactNode;
+  /** Override left position (bypasses internal calculation) */
+  left?: number | ReturnType<typeof useSpring>;
+  /** Override top position (bypasses internal calculation) */
+  top?: number | ReturnType<typeof useSpring>;
+  /** Force flip direction (for custom positioning) */
+  flipped?: boolean;
 }
 
 export function TooltipBox({
@@ -39,6 +45,9 @@ export function TooltipBox({
   offset = 16,
   className = "",
   children,
+  left: leftOverride,
+  top: topOverride,
+  flipped: flippedOverride,
 }: TooltipBoxProps) {
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [tooltipWidth, setTooltipWidth] = useState(180);
@@ -97,7 +106,11 @@ export function TooltipBox({
     animatedTop.set(targetY);
   }, [targetY, animatedTop]);
 
-  const transformOrigin = shouldFlipX ? "right top" : "left top";
+  // Use overrides when provided
+  const finalLeft = leftOverride ?? animatedLeft;
+  const finalTop = topOverride ?? animatedTop;
+  const isFlipped = flippedOverride ?? shouldFlipX;
+  const transformOrigin = isFlipped ? "right top" : "left top";
 
   // Use portal to render into the container
   const container = containerRef.current;
@@ -119,13 +132,13 @@ export function TooltipBox({
       exit={{ opacity: 0 }}
       initial={{ opacity: 0 }}
       ref={tooltipRef}
-      style={{ left: animatedLeft, top: animatedTop }}
+      style={{ left: finalLeft, top: finalTop }}
       transition={{ duration: 0.1 }}
     >
       <motion.div
         animate={{ scale: 1, opacity: 1, x: 0 }}
-        className="min-w-[140px] overflow-hidden rounded-lg bg-zinc-900/30 text-white shadow-lg backdrop-blur-md"
-        initial={{ scale: 0.85, opacity: 0, x: shouldFlipX ? 20 : -20 }}
+        className="min-w-[140px] overflow-hidden rounded-lg bg-zinc-900/80 text-white shadow-lg backdrop-blur-md dark:bg-zinc-900/60"
+        initial={{ scale: 0.85, opacity: 0, x: isFlipped ? 20 : -20 }}
         key={flipKey}
         style={{ transformOrigin }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
