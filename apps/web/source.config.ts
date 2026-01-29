@@ -1,4 +1,5 @@
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
+import { codeThemes } from "./lib/code-theme";
 
 export const docs = defineDocs({
   dir: "content/docs",
@@ -6,6 +7,8 @@ export const docs = defineDocs({
 
 export default defineConfig({
   mdxOptions: {
-    // MDX options here
+    rehypeCodeOptions: {
+      themes: codeThemes,
+    },
   },
 });

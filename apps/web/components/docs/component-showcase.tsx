@@ -7,6 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { codeThemes } from "@/lib/code-theme";
 import { cn } from "@/lib/utils";
 
 interface ComponentShowcaseProps {
@@ -76,7 +77,13 @@ export function ComponentShowcase({
             )}
             forceMount
           >
-            {codeBlock || <DynamicCodeBlock code={code || ""} lang={lang} />}
+            {codeBlock || (
+              <DynamicCodeBlock
+                code={code || ""}
+                lang={lang}
+                options={{ themes: codeThemes }}
+              />
+            )}
           </CollapsibleContent>
 
           {/* Bottom gradient with View Code - only visible when collapsed */}
